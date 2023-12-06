@@ -3,14 +3,16 @@ import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa"
 import ContextMenu from "./ContextMenu";
 import PhotoPicker from "./PhotoPicker";
+import PhotoLibrary from "./PhotoLibrary";
+import CapturePhoto from "./CapturePhoto";
 function Avatar({ type, image, setImage }) {
 
 
   const [hover, setHover] = useState(false);
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [contextMenuCoordinates, setContextMenuCoordinates] = useState({ x: 0, y: 0 });
-
-
+  const [showPhotoLibrary, setShowPhotoLibrary] = useState(false);
+  const [showCapturePhoto, setShowCapturePhoto] = useState(false);
   const [grabPhoto, setGrabPhoto] = useState(false);
 
   const showContextMenu = (e) => {
@@ -32,8 +34,15 @@ function Avatar({ type, image, setImage }) {
   }, [grabPhoto])
 
   const contextMenuOptions = [
-    { name: "Take Photo", callback: () => { } },
-    { name: "Choose From Library", callback: () => { } },
+    {
+      name: "Take Photo", callback: () => {
+        setShowCapturePhoto(true)
+     } },
+    {
+      name: "Choose From Library", callback: () => {
+        setShowPhotoLibrary(true)
+      }
+    },
     {
       name: "Upload Photo", callback: () => {
         setGrabPhoto(true);
@@ -106,6 +115,8 @@ function Avatar({ type, image, setImage }) {
       />
     }
     {grabPhoto && <PhotoPicker onChange={photoPickerChangeHandler} />}
+    {showPhotoLibrary && <PhotoLibrary setImage={setImage} hidePhotoLibrary={setShowPhotoLibrary} />}
+    {showCapturePhoto && <CapturePhoto setImage={setImage} hideCapturePhoto={setShowCapturePhoto} />}
   </>;
 }
 
