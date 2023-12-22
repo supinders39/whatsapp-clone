@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 function onboarding() {
-  const [{ userInfo, newUser, dispatch }] = useStateProvider();
+  const [{ userInfo, newUser }, dispatch] = useStateProvider();
   const [name, setName] = useState(userInfo?.name || "");
   const [about, setAbout] = useState("");
   const [image, setImage] = useState("/default_avatar.png");
