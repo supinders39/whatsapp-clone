@@ -26,12 +26,41 @@ export const onBoardUser = async (req, res, next) => {
         if (!email || !name  || !profilePicture) {
             return res.send("Email, name and image must be provided")
         }
-        const prisma = getPrismaInstance()
-        await prisma.user.create({
+        const prisma = getPrismaInstance();
+        const user = await prisma.user.create({
             data: { email: email, name, about, profilePicture}
         })
-        return res.json({msg: "success", status: true})
+        return res.json({msg: "success", status: true, user})
     } catch (error) {
             next(error);
+    }
+}
+
+
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const prisma = getPrismaInstance();
+        const users = await prisma.user.findMany({
+            orderBy: { name: "asc" },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                profilePicture: true,
+                about: true
+            }
+        })
+        const usersGroupedByInitialLetter = {};
+        users.forEach((user) => {
+            const initialLetter = user.name.charAt(0).toUpperCase();
+            if (!usersGroupedByInitialLetter[initialLetter]) {
+                usersGroupedByInitialLetter[initialLetter] = []
+            }
+            usersGroupedByInitialLetter[initialLetter].push(user)
+        })
+        return res.status(200).send({users: usersGroupedByInitialLetter})
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error: error })
     }
 }

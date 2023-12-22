@@ -40,7 +40,7 @@ function login() {
           router.push("/onboarding")
         } else {
           const {id, email, name, profilePicture: profileImage, status
-        } = data;
+        } = data.data;
           dispatch({
             type: reducerCases.SET_USER_INFO,
             userInfo: {
