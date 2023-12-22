@@ -65,29 +65,31 @@ function Main() {
         dispatch({ type: reducerCases.ADD_MESSAGE, newMessage: data.message })
       })
 
-      socket.current.on("incoming-voice-call", ({from, roomId, callType}) => {
-        dispatch({ type: reducerCases.SET_INCOMING_VOICE_CALL, 
-          incomingVoiceCall: {...from, roomId, callType}
-        }) 
+      socket.current.on("incoming-voice-call", ({ from, roomId, callType }) => {
+        dispatch({
+          type: reducerCases.SET_INCOMING_VOICE_CALL,
+          incomingVoiceCall: { ...from, roomId, callType }
+        })
       })
 
-      socket.current.on("incoming-video-call", ({from, roomId, callType}) => {
-        dispatch({ type: reducerCases.SET_INCOMING_VIDEO_CALL, 
-          incomingVideoCall: {...from, roomId, callType}
-        }) 
+      socket.current.on("incoming-video-call", ({ from, roomId, callType }) => {
+        dispatch({
+          type: reducerCases.SET_INCOMING_VIDEO_CALL,
+          incomingVideoCall: { ...from, roomId, callType }
+        })
       })
 
       socket.current.on("voice-call-rejected", () => {
-        dispatch({ type: reducerCases.END_CALL        }) 
+        dispatch({ type: reducerCases.END_CALL })
       })
 
       socket.current.on("video-call-rejected", () => {
-        dispatch({ type: reducerCases.END_CALL        }) 
+        dispatch({ type: reducerCases.END_CALL })
       })
 
-      // socket.current.on("accept-incoming-call", ({id}) => {
-      //   dispatch({ type: reducerCases.END_CALL        }) 
-      // })
+      socket.current.on("online-users", ({ onlineUsers }) => {
+        dispatch({ type: reducerCases.SET_ONLINE_USERS, onlineUsers })
+      })
 
       setSocketEvent(true)
     }
