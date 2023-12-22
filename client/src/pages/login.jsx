@@ -3,7 +3,7 @@ import { reducerCases } from "@/context/constants";
 import { CHECK_USER_ROUTE } from "@/utils/ApiRoutes";
 import { firebaseAuth } from "@/utils/FirebaseConfig";
 import axios from "axios";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, getRedirectResult, signInWithPopup, signInWithRedirect } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -20,43 +20,88 @@ function login() {
     }
   }, [userInfo, newUser]);
 
-  const handleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    const { user:{displayName:name, email, photoURL: profileImage} } = await signInWithPopup(firebaseAuth, provider);
-    try {
-      if (email) {
-        const { data } = await axios.post(CHECK_USER_ROUTE, { email });
-        console.log(data);
+  useEffect(() => {
+    getRedirectResult(firebaseAuth).then(async (response) => {
+      if (!response) return
+      const { user: { displayName: name, email, photoURL: profileImage } } = response;
+      try {
+        if (email) {
+          const { data } = await axios.post(CHECK_USER_ROUTE, { email });
+          console.log(data);
 
-        if (!data.status) {
-          dispatch({ type: reducerCases.SET_NEW_USER, newUser: true })
-          dispatch({
-            type: reducerCases.SET_USER_INFO,
-            userInfo: {
-              name, email, profileImage, status: ""
-            }
-          })
-          
-          router.push("/onboarding")
-        } else {
-          const {id, email, name, profilePicture: profileImage, status
-        } = data.data;
-          dispatch({
-            type: reducerCases.SET_USER_INFO,
-            userInfo: {
-              id,
-              name, email, profileImage, status,
-            }
-          })
-          router.push("/")
+          if (!data.status) {
+            dispatch({ type: reducerCases.SET_NEW_USER, newUser: true })
+            dispatch({
+              type: reducerCases.SET_USER_INFO,
+              userInfo: {
+                name, email, profileImage, status: ""
+              }
+            })
+
+            router.push("/onboarding")
+          } else {
+            const { id, email, name, profilePicture: profileImage, status
+            } = data.data;
+            dispatch({
+              type: reducerCases.SET_USER_INFO,
+              userInfo: {
+                id,
+                name, email, profileImage, status,
+              }
+            })
+            router.push("/")
+
+          }
 
         }
+      } catch (error) {
+        console.log("🚀 ~ file: login.jsx:17 ~ handleLogin ~ error:", error)
 
       }
-    } catch (error) {
-      console.log("🚀 ~ file: login.jsx:17 ~ handleLogin ~ error:", error)
+    }).catch(error => {
+      console.error(error);
+    })
+  }, []);
+
+
+
+  const handleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    const { user: { displayName: name, email, photoURL: profileImage } } = await signInWithRedirect(firebaseAuth, provider);
+    // try {
+    //   if (email) {
+    //     const { data } = await axios.post(CHECK_USER_ROUTE, { email });
+    //     console.log(data);
+
+    //     if (!data.status) {
+    //       dispatch({ type: reducerCases.SET_NEW_USER, newUser: true })
+    //       dispatch({
+    //         type: reducerCases.SET_USER_INFO,
+    //         userInfo: {
+    //           name, email, profileImage, status: ""
+    //         }
+    //       })
+          
+    //       router.push("/onboarding")
+    //     } else {
+    //       const {id, email, name, profilePicture: profileImage, status
+    //     } = data.data;
+    //       dispatch({
+    //         type: reducerCases.SET_USER_INFO,
+    //         userInfo: {
+    //           id,
+    //           name, email, profileImage, status,
+    //         }
+    //       })
+    //       router.push("/")
+
+    //     }
+
+    //   }
+    // } catch (error) {
+    //   console.log("🚀 ~ file: login.jsx:17 ~ handleLogin ~ error:", error)
       
-    }
+    // }
   }
   return <div className="flex justify-center items-center bg-panel-header-background h-screen w-screen flex-col gap-6">
     <div className="flex items-center justify-center gap-2 text-white ">
