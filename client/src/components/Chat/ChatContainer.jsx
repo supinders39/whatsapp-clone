@@ -3,6 +3,9 @@ import { calculateTime } from "@/utils/CalculateTime";
 import React from "react";
 import MessageStatus from "../common/MessageStatus";
 import ImageMessage from "./ImageMessage";
+import dynamic from "next/dynamic";
+const VoiceMessage = dynamic(() => import("./VoiceMessage", {srr: false}));
+
 
 function ChatContainer() {
   const [{ messages, currentChatUser, userInfo }, dispatch] = useStateProvider();
@@ -11,7 +14,7 @@ function ChatContainer() {
     <div className=" mx-10 my-6 relative bottom-0 z-40 left-0">
 
     <div className=" flex w-full ">
-        <div className="flex flex-col justify-end w-full gap-1 overflow-auto">
+        <div className="flex flex-col justify-end w-full gap-1 overflow-hidden">
         {messages.map((message, index) => (
           <div key={index} className={`flex ${message?.senderId === currentChatUser.id ? "justify-start" : "justify-end"}`}>
             {message?.type === "text" && (
@@ -28,6 +31,7 @@ function ChatContainer() {
               </div>
             )}
             {message.type === "image" && <ImageMessage message={message} />}
+            {message.type === "audio" && <VoiceMessage message={message} />}
             </div>
         ))}
       </div>
