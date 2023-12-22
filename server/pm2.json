@@ -1,0 +1,17 @@
+{
+    "apps": [
+        {
+            "name": "whatsapp-backend",
+            "script": "npm",
+            "args": "start",
+            "watch": true,
+            "ignore_watch": [
+                "node_modules",
+                "dist",
+                "public"
+            ],
+            "instances": 1,
+            "exec_mode": "fork"
+        }
+    ]
+}
