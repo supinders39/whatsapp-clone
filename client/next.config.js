@@ -7,7 +7,7 @@ const nextConfig = {
 
   },
   images: {
-    domains: ["localhost"]
+    domains: ["localhost", "whatsapp.sarao.dev", "whatsappapi.sarao.dev", "sarao.dev"]
   }
 };
 
