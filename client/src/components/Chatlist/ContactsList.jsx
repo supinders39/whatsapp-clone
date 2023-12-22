@@ -31,7 +31,7 @@ function ContactsList() {
             dispatch({ type: reducerCases.SET_ALL_CONTACTS_PAGE })
           }}
         />
-        <span>New CHat</span>
+        <span>New Chat</span>
       </div>
     </div>
     <div className="bg-search-input-container-background h-full flex-auto overflow-auto custom-scrollbar">
