@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import ChatListItem from "./ChatLIstItem";
 
 function List() {
-  const [{ userInfo, userContacts }, dispatch] = useStateProvider();
+  const [{ userInfo, userContacts, filteredContacts, contactSearch }, dispatch] = useStateProvider();
   useEffect(() => { 
     console.log(userInfo)
     const getContacts = async () => {
@@ -23,9 +23,18 @@ function List() {
     }
   }, [userInfo])
   return <div className=" bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar">
-    {userContacts.map(contact => (
-      <ChatListItem data={contact}  key={contact.id} />
-    ))}
+    {
+      contactSearch ? <>
+        {filteredContacts.map(contact => (
+          <ChatListItem data={contact} key={contact.id} />
+        ))}
+        {filteredContacts.length === 0 && <span className="text-secondary text-center w-full block">No contacts found!</span>}
+      </> : userContacts.map(contact => (
+      
+        <ChatListItem data={contact} key={contact.id} />
+      ))
+    }
+  
   </div>;
 }
 
